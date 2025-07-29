@@ -1,9 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const productRoutes = require("./routes/productRoutes");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
+
 
 mongoose
   .connect("mongodb://localhost:27017/product-catalog", {})

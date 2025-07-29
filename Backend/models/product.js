@@ -18,6 +18,11 @@ const productSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  status: {
+    type: String,
+    required: true,
+    enum: ["active", "inactive"],
+  },
 });
 
 module.exports = mongoose.model("Product", productSchema);

@@ -10,6 +10,7 @@ function Login() {
   const handleLogin = () => {
     if (username === 'user' && password === '1234') {
       alert('Login successful');
+      // navigate('/create-product');
       navigate('/products');
     } else {
       alert('Invalid credentials');
