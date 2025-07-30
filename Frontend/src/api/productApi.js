@@ -1,8 +1,8 @@
+// src/api/productApi.js
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000/products"; // Your backend route
+const BASE_URL = "http://localhost:3000/products"; // matches your backend
 
-// Fetch all products
 export const getAllProducts = async () => {
   try {
     const response = await axios.get(BASE_URL);
@@ -13,7 +13,6 @@ export const getAllProducts = async () => {
   }
 };
 
-// Fetch single product by ID
 export const getProductById = async (id) => {
   try {
     const response = await axios.get(`${BASE_URL}/${id}`);
@@ -24,7 +23,6 @@ export const getProductById = async (id) => {
   }
 };
 
-// Create new product
 export const createProduct = async (productData) => {
   try {
     const response = await axios.post(BASE_URL, productData);
@@ -35,7 +33,6 @@ export const createProduct = async (productData) => {
   }
 };
 
-// Update product
 export const updateProduct = async (id, productData) => {
   try {
     const response = await axios.put(`${BASE_URL}/${id}`, productData);
@@ -46,7 +43,6 @@ export const updateProduct = async (id, productData) => {
   }
 };
 
-// Delete product
 export const deleteProduct = async (id) => {
   try {
     const response = await axios.delete(`${BASE_URL}/${id}`);
