@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { createProduct, getAllProducts,deleteProduct } from "../../api/productApi";
+import { createProduct, getAllProducts,deleteProduct, updateProduct } from "../../api/productApi";
 import {
   Button,
   TextField,
@@ -7,7 +7,8 @@ import {
   CardContent,
   Typography,
   Box,
-  Modal, InputLabel, Select, MenuItem
+  Modal, InputLabel, Select, MenuItem,
+  CardActions
 } from "@mui/material";
 import Header from "../Header/Header"; // Assuming you have a Header component
 
@@ -20,6 +21,7 @@ const CreateProductForm = () => {
     status: "", 
   });
   const [products, setProducts] = useState([]);
+  const [editProduct, setEditProduct] = useState(null);
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -34,16 +36,30 @@ const CreateProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await createProduct(product);
-      handleClose();
-      fetchProducts(); // Reload after save
-
-      
-    } catch (err) {
-      alert("Error saving product. Check backend.");
+    if(editProduct !== null){
+      try{
+          const productId = products[editProduct]._id;
+          await updateProduct (productId,product)
+          alert(`Proudct "${product.name}" updated successfully.`)
+          setEditProduct(null)
+          fetchProducts();
+          handleClose();
+      } catch {
+        alert("Error update product. Check backend. ")
+      }
+    }
+     else{
+      try {
+        await createProduct(product);
+        alert(`Proudct "${product.name}" add successfully.`)
+        fetchProducts(); // Reload after save 
+        handleClose();
+      } catch (err) {
+        alert("Error saving product. Check backend.");
+      }
     }
   };
+
 
   
 
@@ -56,10 +72,16 @@ const CreateProductForm = () => {
       alert("Error loading products");
     }
   };
+  const handleEdit = (index) => {
+  const selectedProduct = products[index]
+   setProduct(selectedProduct)
+   setEditProduct(index)
+   setOpen(true)
+  }
   const handleDelete = async (id,name) => {
     try {
       await deleteProduct(id);
-      alert(`Poduct "${name}" (ID: ${id}) deleted successfully.`);
+      alert(`Poduct "${name}" deleted successfully.`);
       fetchProducts(); // Reload after delete 
     }
     catch (err) {
@@ -158,9 +180,9 @@ const CreateProductForm = () => {
         </Box>
       </Modal>
 
-      <Box mt={4} display="flex" flexWrap="wrap" gap={2}>
-        {products.map((prod) => (
-          <Card key={prod._id} sx={{ width: 250 }}>
+      <Box mt={4} justifyContent="center" display="flex" flexWrap="wrap" gap={2}>
+        { products && products.map((prod,index) => (
+          <Card key={prod._id} sx={{ width: 180 }}>
             <CardContent>
               <Typography variant="h6">{prod.name}</Typography>
               <Typography variant="body2">Category: {prod.category}</Typography>
@@ -169,8 +191,11 @@ const CreateProductForm = () => {
                 Description: {prod.description}
               </Typography>
               <Typography variant="body2">Status: {prod.status}</Typography>
-            </CardContent>
-            <Button onClick={() => handleDelete(prod._id,prod._name)}>delete</Button>
+            </CardContent >
+            <CardActions>
+            <Button  size="small" variant="contained" color="primary" onClick={() =>handleEdit(index)}>Edit</Button>
+            <Button  size="small" variant="contained" color="secondary" onClick={() => handleDelete(prod._id,prod.name)}>delete</Button>
+            </CardActions>
           </Card>
         ))}
       </Box>
